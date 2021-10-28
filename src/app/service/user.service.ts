@@ -33,4 +33,8 @@ export class UserService {
       {reportProgress: true,
       observe: 'events'});
   }
+
+  public deleteUser(userId: number): Observable<any | HttpErrorResponse> {
+    return this.http.delete<any>(`${this.host}/user/delete/${userId}`);
+  }
 }
