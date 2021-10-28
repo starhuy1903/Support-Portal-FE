@@ -3,10 +3,9 @@ import { HttpClient, HttpErrorResponse, HttpResponse, HttpEvent } from '@angular
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../model/user';
+import {CustomHttpResponse} from "../model/custom-http-response";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class UserService {
   private host = environment.apiUrl;
 
@@ -24,8 +23,8 @@ export class UserService {
     return this.http.post<User>(`${this.host}/user/update`, formData);
   }
 
-  public resetPassword(email: string): Observable<any | HttpErrorResponse> {
-    return this.http.get(`${this.host}/user/resetpassword/${email}`);
+  public resetPassword(email: string): Observable<CustomHttpResponse | HttpErrorResponse> {
+    return this.http.get<CustomHttpResponse>(`${this.host}/user/resetpassword/${email}`);
   }
 
   public updateProfileImage(formData: FormData): Observable<HttpEvent<User> | HttpErrorResponse> {
@@ -34,8 +33,8 @@ export class UserService {
       observe: 'events'});
   }
 
-  public deleteUser(userId: number): Observable<any | HttpErrorResponse> {
-    return this.http.delete<any>(`${this.host}/user/delete/${userId}`);
+  public deleteUser(userId: number): Observable<CustomHttpResponse | HttpErrorResponse> {
+    return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete/${userId}`);
   }
 
   public addUsersToLocalCache(users: User[]): void {
