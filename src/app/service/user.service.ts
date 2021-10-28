@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse, HttpResponse, HttpEvent } from '@angular/common/http'
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../model/user';
@@ -26,5 +26,11 @@ export class UserService {
 
   public resetPassword(email: string): Observable<any | HttpErrorResponse> {
     return this.http.get(`${this.host}/user/resetpassword/${email}`);
+  }
+
+  public updateProfileImage(formData: FormData): Observable<HttpEvent<User> | HttpErrorResponse> {
+    return this.http.post<User>(`${this.host}/user/updateProfileImage`, formData,
+      {reportProgress: true,
+      observe: 'events'});
   }
 }
