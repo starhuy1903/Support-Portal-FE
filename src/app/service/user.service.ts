@@ -19,4 +19,8 @@ export class UserService {
   public addUser(formData: FormData): Observable<User | HttpErrorResponse> {
     return this.http.post<User>(`${this.host}/user/add`, formData);
   }
+
+  public updateUser(formData: FormData): Observable<User | HttpErrorResponse> {
+    return this.http.post<User>(`${this.host}/user/update`, formData);
+  }
 }
