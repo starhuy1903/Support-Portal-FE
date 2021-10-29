@@ -48,11 +48,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     );
   }
 
-  private sendErrorNotification(notificationType: NotificationType, message: string) {
+  private sendErrorNotification(notificationType: NotificationType, message: string): void {
     if(message) {
       this.notificationService.notify(notificationType, message);
     } else {
-      this.notificationService.notify(notificationType, 'AN ERROR OCCURRED. PLEASE TRY AGAIN');
+      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
     }
   }
 
