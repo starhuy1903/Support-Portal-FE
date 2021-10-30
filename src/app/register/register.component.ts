@@ -7,7 +7,6 @@ import {Subscription} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {NotificationType} from "../enum/notification-type.enum";
 
-
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -29,7 +28,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   // TODO: check firstname, lastname is valid (UPPERCASE, lowercase)
   public onRegister(user: User): void {
     this.showLoading = true;
-    console.log(user);
     this.subscriptions.push(
       this.authenticationService.register(user).subscribe(
         (response: User) => {
@@ -37,7 +35,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.sendNotification(NotificationType.SUCCESS, `A new account was created for ${response.firstName}. Please check your email for password to log in.`);
         },
         (errorResponse: HttpErrorResponse) => {
-          console.log(errorResponse);
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.showLoading = false;
         }
