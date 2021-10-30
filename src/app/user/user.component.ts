@@ -5,6 +5,7 @@ import {UserService} from "../service/user.service";
 import {NotificationService} from "../service/notification.service";
 import {NotificationType} from "../enum/notification-type.enum";
 import {HttpErrorResponse} from "@angular/common/http";
+import {NgForm} from "@angular/forms";
 
 @Component({
   selector: 'app-user',
@@ -14,9 +15,11 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class UserComponent implements OnInit {
   private titleSubject = new BehaviorSubject<string>('Users');
   public titleAction$ = this.titleSubject.asObservable();
-  public users: User[] = [];
-  public refreshing: boolean = false; // ??
-  public selectedUser: User | undefined;
+  public users: User[];
+  public refreshing: boolean;
+  public selectedUser: User;
+  public fileName: string;
+  public profileImage: File;
   private subscriptions: Subscription[] = [];
 
   constructor(private userService: UserService, private notificationService: NotificationService) { }
@@ -51,9 +54,51 @@ export class UserComponent implements OnInit {
 
   public onSelectUser(selectedUser: User): void {
     this.selectedUser = selectedUser;
-    const userInfo = document.getElementById("openUserInfo");
-    if(userInfo !== null) {
-      userInfo.click();
+    this.clickButton('openUserInfo');
+  }
+
+  public onProfileImageChange(fileName: string, profileImage: File): void {
+    this.fileName = fileName;
+    this.profileImage = profileImage;
+  }
+
+  public saveNewUser(): void {
+    this.clickButton('new-user-save');
+  }
+
+  public onAddNewUser(userForm: NgForm): void {
+    const formData = this.userService.createUserFormData(null, userForm.value, this.profileImage);
+    this.subscriptions.push(
+      this.userService.addUser(formData).subscribe(
+        (response: User) => {
+          this.clickButton('new-user-close');
+          this.getUsers(false);
+          this.fileName = null;
+          this.profileImage = null;
+          userForm.reset();
+          this.sendNotification(NotificationType.SUCCESS, `${response.firstName} ${response.lastName} updated successfully`);
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.profileImage = null;
+        }
+      )
+    );
+  }
+
+  public searchUsers(searchTerm: string): void {
+    const results: User[] = [];
+    for (const user of this.userService.getUsersFromLocalCache()) {
+      if(user.firstName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+        user.lastName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+        user.username.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1 ||
+        user.userId.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) {
+        results.push(user);
+      }
+    }
+    this.users = results;
+    if(results.length === 0 || !searchTerm) {
+      this.users = this.userService.getUsersFromLocalCache();
     }
   }
 
@@ -63,5 +108,9 @@ export class UserComponent implements OnInit {
     } else {
       this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
     }
+  }
+
+  private clickButton(buttonId: string): void {
+    document.getElementById(buttonId).click();
   }
 }

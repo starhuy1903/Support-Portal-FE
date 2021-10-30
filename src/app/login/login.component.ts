@@ -14,7 +14,7 @@ import {HeaderType} from "../enum/header-type.enum";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  public showLoading: boolean | undefined; // ??
+  public showLoading: boolean;
   private subscriptions: Subscription[] = [];
 
   constructor(private router: Router, private authenticationService: AuthenticationService, private notificationService: NotificationService) { }

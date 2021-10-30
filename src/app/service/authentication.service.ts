@@ -8,8 +8,8 @@ import { JwtHelperService } from "@auth0/angular-jwt";
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
   public host = environment.apiUrl;
-  private token: any; // ??
-  private loggedInUsername: any;  // ??
+  private token: string;
+  private loggedInUsername: string;
   private jwtHelper = new JwtHelperService();
 
   constructor(private http: HttpClient) {
@@ -31,19 +31,17 @@ export class AuthenticationService {
     localStorage.removeItem('users');
   }
 
-  public saveToken(token: string | null): void {
+  public saveToken(token: string): void {
     this.token = token;
-    if (typeof token === "string") {  // ??
-      localStorage.setItem('token', token); // ??
-    }
+    localStorage.setItem('token', token);
   }
 
-  public addUserToLocalCache(user: User | null): void {
+  public addUserToLocalCache(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
   public getUserFromLocalCache(): User {
-    return JSON.parse(<string>localStorage.getItem('user'));  // ??
+    return JSON.parse(localStorage.getItem('user'));
   }
 
   public loadToken(): void {

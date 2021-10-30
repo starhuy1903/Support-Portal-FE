@@ -14,7 +14,7 @@ import {NotificationType} from "../enum/notification-type.enum";
 })
 export class RegisterComponent implements OnInit, OnDestroy {
 
-  public showLoading: boolean | undefined; // ??
+  public showLoading: boolean;
   private subscriptions: Subscription[] = [];
 
   constructor(private router: Router, private authenticationService: AuthenticationService, private notificationService: NotificationService) { }
